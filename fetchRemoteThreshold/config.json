@@ -1,8 +1,0 @@
-{
-  "fetchRemoteThreshold": {
-    "inputs": {},
-    "outputs": {
-      "threshold": "analog"
-    }
-  }
-}

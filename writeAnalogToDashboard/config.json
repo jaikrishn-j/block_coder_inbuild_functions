@@ -1,0 +1,10 @@
+{
+  "writeAnalogToDashboard": {
+    "inputs": {
+      "targetPin": "analog",
+      "intensity": "analog"
+    },
+    "outputs": {},
+    "type": "dashboard"
+  }
+}

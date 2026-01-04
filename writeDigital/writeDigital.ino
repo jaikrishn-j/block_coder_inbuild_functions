@@ -1,3 +1,3 @@
 void writeDigital(int targetPin, int signalLevel) {
-  // <block box code in comments>
+  // block box code here.
 }

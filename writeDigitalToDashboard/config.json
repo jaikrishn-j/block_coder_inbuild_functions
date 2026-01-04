@@ -1,0 +1,10 @@
+{
+  "writeDigitalToDashboard": {
+    "inputs": {
+      "targetPin": "digital",
+      "signalLevel": "digital"
+    },
+    "outputs": {},
+    "type": "dashboard"
+  }
+}

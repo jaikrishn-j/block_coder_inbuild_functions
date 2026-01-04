@@ -1,3 +1,3 @@
 void fadeLed(int ledPin, int brightness) {
-  // <block box code in comments>
+  // block box code here.
 }

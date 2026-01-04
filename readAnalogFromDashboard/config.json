@@ -1,0 +1,9 @@
+{
+  "readAnalogFromDashboard": {
+    "inputs": {},
+    "outputs": {
+      "valueA": "analog"
+    },
+    "type": "dashboard"
+  }
+}

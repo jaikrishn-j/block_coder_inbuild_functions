@@ -59,71 +59,31 @@
     "inputs": { "switchPin": "digital" },
     "outputs": { "switchStatus": "digital" }
   },
-
   
-
-  "connectToWifi": {
-    "inputs": {},
-    "outputs": { "wifiConnected": "digital" }
-  },
-  "publishSensorData": {
-    "inputs": { "sensorReading": "analog" },
-    "outputs": { "dataSent": "digital" }
-  },
-  "publishBinaryState": {
-    "inputs": { "state": "digital" },
-    "outputs": { "ack": "digital" }
-  },
-  "subscribeToCommand": {
-    "inputs": {},
-    "outputs": { "commandValue": "analog" }
-  },
-  "receiveOnOffSignal": {
-    "inputs": {},
-    "outputs": { "remoteSwitch": "digital" }
-  },
-  "streamAnalogOverWifi": {
-    "inputs": { "localValue": "analog" },
-    "outputs": { "streamActive": "digital" }
-  },
-  "fetchRemoteThreshold": {
-    "inputs": {},
-    "outputs": { "threshold": "analog" }
-  },
-  "requestDeviceStatus": {
-    "inputs": {},
-    "outputs": { "onlineStatus": "digital" }
-  },
-  "sendAlertSignal": {
-    "inputs": { "alertLevel": "analog" },
-    "outputs": { "alertDelivered": "digital" }
-  },
-  "syncWithCloudClock": {
-    "inputs": {},
-    "outputs": { "timeSynced": "digital" }
-  },
-  "enableRemoteControl": {
-    "inputs": { "allowControl": "digital" },
-    "outputs": { "controlReady": "digital" }
-  },
-  "readFromMqttFeed": {
-    "inputs": {},
-    "outputs": { "feedValue": "analog" }
-  },
-  "broadcastDeviceReady": {
-    "inputs": { "readyPin": "digital" },
-    "outputs": { "broadcastOk": "digital" }
-  },
-  "updateFirmwareFlag": {
-    "inputs": {},
-    "outputs": { "updateAvailable": "digital" }
-  },
-  "joinWifiNetwork": {
-    "inputs": { "networkId": "analog" },
-    "outputs": { "joined": "digital" }
-  },
   "getPin":{
     "inputs":{},
     "pintype": true
+  },
+
+  
+  "readDigitalFromDashboard":{
+    "inputs": { },
+    "outputs": { "stateD": "digital" },
+    "type": "dashboard"
+  },
+  "readAnalogFromDashboard":{
+    "inputs": { },
+    "outputs": { "valueA": "analog" },
+    "type": "dashboard"
+  },
+  "writeDigitalToDashboard":{
+    "inputs": { "targetPin": "digital", "signalLevel": "digital" },
+    "outputs": {},
+    "type": "dashboard"
+  },
+  "writeAnalogToDashboard":{
+    "inputs": { "targetPin": "analog", "intensity": "analog" },
+    "outputs": {},
+    "type": "dashboard"
   }
 }

@@ -1,3 +1,3 @@
 void readPotentiometer(int potPin, int potValue) {
-  // <block box code in comments>
+  // block box code here.
 }

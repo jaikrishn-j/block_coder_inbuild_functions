@@ -1,0 +1,9 @@
+{
+  "readDigitalFromDashboard": {
+    "inputs": {},
+    "outputs": {
+      "stateD": "digital"
+    },
+    "type": "dashboard"
+  }
+}

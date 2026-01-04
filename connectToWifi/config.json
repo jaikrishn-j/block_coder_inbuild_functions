@@ -1,8 +1,0 @@
-{
-  "connectToWifi": {
-    "inputs": {},
-    "outputs": {
-      "wifiConnected": "digital"
-    }
-  }
-}

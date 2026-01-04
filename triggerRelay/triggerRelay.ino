@@ -1,3 +1,3 @@
 void triggerRelay(int relayPin, int activate) {
-  // <block box code in comments>
+  // block box code here.
 }

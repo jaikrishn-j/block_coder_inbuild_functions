@@ -1,3 +1,3 @@
 void senseTemperature(int tempSensor, int tempValue) {
-  // <block box code in comments>
+  // block box code here.
 }
