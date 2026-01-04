@@ -1,0 +1,9 @@
+{
+  "fadeLed": {
+    "inputs": {
+      "ledPin": "analog",
+      "brightness": "analog"
+    },
+    "outputs": {}
+  }
+}

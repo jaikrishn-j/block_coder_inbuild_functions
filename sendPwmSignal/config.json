@@ -1,0 +1,9 @@
+{
+  "sendPwmSignal": {
+    "inputs": {
+      "pwmPin": "analog",
+      "dutyCycle": "analog"
+    },
+    "outputs": {}
+  }
+}

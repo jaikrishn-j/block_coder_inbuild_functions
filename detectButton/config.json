@@ -1,0 +1,10 @@
+{
+  "detectButton": {
+    "inputs": {
+      "buttonPin": "digital"
+    },
+    "outputs": {
+      "pressed": "digital"
+    }
+  }
+}

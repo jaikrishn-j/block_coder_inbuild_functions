@@ -1,0 +1,9 @@
+{
+  "writeAnalog": {
+    "inputs": {
+      "targetPin": "analog",
+      "intensity": "analog"
+    },
+    "outputs": {}
+  }
+}

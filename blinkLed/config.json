@@ -1,0 +1,9 @@
+{
+  "blinkLed": {
+    "inputs": {
+      "ledPin": "digital",
+      "onOff": "digital"
+    },
+    "outputs": {}
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "readFromMqttFeed": {
+    "inputs": {},
+    "outputs": {
+      "feedValue": "analog"
+    }
+  }
+}

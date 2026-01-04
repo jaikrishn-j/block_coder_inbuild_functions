@@ -1,0 +1,10 @@
+{
+  "enableRemoteControl": {
+    "inputs": {
+      "allowControl": "digital"
+    },
+    "outputs": {
+      "controlReady": "digital"
+    }
+  }
+}

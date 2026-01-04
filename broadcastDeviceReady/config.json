@@ -1,0 +1,10 @@
+{
+  "broadcastDeviceReady": {
+    "inputs": {
+      "readyPin": "digital"
+    },
+    "outputs": {
+      "broadcastOk": "digital"
+    }
+  }
+}

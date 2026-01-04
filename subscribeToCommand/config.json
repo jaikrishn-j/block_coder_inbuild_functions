@@ -1,0 +1,8 @@
+{
+  "subscribeToCommand": {
+    "inputs": {},
+    "outputs": {
+      "commandValue": "analog"
+    }
+  }
+}

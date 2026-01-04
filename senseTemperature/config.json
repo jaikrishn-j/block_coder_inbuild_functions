@@ -1,0 +1,10 @@
+{
+  "senseTemperature": {
+    "inputs": {
+      "tempSensor": "analog"
+    },
+    "outputs": {
+      "tempValue": "analog"
+    }
+  }
+}

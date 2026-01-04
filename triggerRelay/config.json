@@ -1,0 +1,9 @@
+{
+  "triggerRelay": {
+    "inputs": {
+      "relayPin": "digital",
+      "activate": "digital"
+    },
+    "outputs": {}
+  }
+}

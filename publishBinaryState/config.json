@@ -1,0 +1,10 @@
+{
+  "publishBinaryState": {
+    "inputs": {
+      "state": "digital"
+    },
+    "outputs": {
+      "ack": "digital"
+    }
+  }
+}

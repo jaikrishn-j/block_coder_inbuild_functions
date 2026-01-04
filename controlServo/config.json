@@ -1,0 +1,9 @@
+{
+  "controlServo": {
+    "inputs": {
+      "servoPin": "analog",
+      "angle": "analog"
+    },
+    "outputs": {}
+  }
+}

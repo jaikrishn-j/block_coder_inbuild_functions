@@ -1,0 +1,10 @@
+{
+  "checkSwitchState": {
+    "inputs": {
+      "switchPin": "digital"
+    },
+    "outputs": {
+      "switchStatus": "digital"
+    }
+  }
+}

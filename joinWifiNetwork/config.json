@@ -1,0 +1,10 @@
+{
+  "joinWifiNetwork": {
+    "inputs": {
+      "networkId": "analog"
+    },
+    "outputs": {
+      "joined": "digital"
+    }
+  }
+}

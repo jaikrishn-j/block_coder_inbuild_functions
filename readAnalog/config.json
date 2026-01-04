@@ -1,0 +1,10 @@
+{
+  "readAnalog": {
+    "inputs": {
+      "pinA": "analog"
+    },
+    "outputs": {
+      "valueA": "analog"
+    }
+  }
+}

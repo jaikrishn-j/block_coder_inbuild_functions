@@ -1,0 +1,10 @@
+{
+  "readPotentiometer": {
+    "inputs": {
+      "potPin": "analog"
+    },
+    "outputs": {
+      "potValue": "analog"
+    }
+  }
+}

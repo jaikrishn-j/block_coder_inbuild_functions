@@ -1,0 +1,10 @@
+{
+  "publishSensorData": {
+    "inputs": {
+      "sensorReading": "analog"
+    },
+    "outputs": {
+      "dataSent": "digital"
+    }
+  }
+}

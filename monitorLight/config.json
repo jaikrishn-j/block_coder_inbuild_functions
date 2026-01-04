@@ -1,0 +1,10 @@
+{
+  "monitorLight": {
+    "inputs": {
+      "ldrPin": "analog"
+    },
+    "outputs": {
+      "lightLevel": "analog"
+    }
+  }
+}

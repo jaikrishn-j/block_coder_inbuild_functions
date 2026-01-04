@@ -1,0 +1,10 @@
+{
+  "streamAnalogOverWifi": {
+    "inputs": {
+      "localValue": "analog"
+    },
+    "outputs": {
+      "streamActive": "digital"
+    }
+  }
+}

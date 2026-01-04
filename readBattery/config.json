@@ -1,0 +1,10 @@
+{
+  "readBattery": {
+    "inputs": {
+      "vbatPin": "analog"
+    },
+    "outputs": {
+      "batteryLevel": "analog"
+    }
+  }
+}

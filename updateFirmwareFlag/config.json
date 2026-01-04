@@ -1,0 +1,8 @@
+{
+  "updateFirmwareFlag": {
+    "inputs": {},
+    "outputs": {
+      "updateAvailable": "digital"
+    }
+  }
+}

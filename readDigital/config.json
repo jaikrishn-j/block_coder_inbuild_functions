@@ -1,0 +1,10 @@
+{
+  "readDigital": {
+    "inputs": {
+      "pinD": "digital"
+    },
+    "outputs": {
+      "stateD": "digital"
+    }
+  }
+}

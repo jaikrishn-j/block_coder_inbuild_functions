@@ -1,0 +1,10 @@
+{
+  "sendAlertSignal": {
+    "inputs": {
+      "alertLevel": "analog"
+    },
+    "outputs": {
+      "alertDelivered": "digital"
+    }
+  }
+}

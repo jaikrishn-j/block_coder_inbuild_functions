@@ -1,0 +1,8 @@
+{
+  "receiveOnOffSignal": {
+    "inputs": {},
+    "outputs": {
+      "remoteSwitch": "digital"
+    }
+  }
+}

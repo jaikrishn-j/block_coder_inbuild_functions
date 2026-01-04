@@ -1,0 +1,9 @@
+{
+  "writeDigital": {
+    "inputs": {
+      "targetPin": "digital",
+      "signalLevel": "digital"
+    },
+    "outputs": {}
+  }
+}

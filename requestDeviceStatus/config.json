@@ -1,0 +1,8 @@
+{
+  "requestDeviceStatus": {
+    "inputs": {},
+    "outputs": {
+      "onlineStatus": "digital"
+    }
+  }
+}
