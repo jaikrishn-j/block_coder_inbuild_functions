@@ -1,15 +1,10 @@
-void writeDigitalToDashboard(int targetPin, int signalLevel, const char* topic) {
-  // 1. Physically set the pin on the ESP8266
-  digitalWrite(targetPin, signalLevel);
-
-  // 2. Prepare the payload for the MQTT broker
-  // We send "1" for HIGH and "0" for LOW for maximum dashboard compatibility
+void writeDigitalToDashboard(int signalLevel, const char* topic) {
+  // Prepare the payload for the MQTT broker
   const char* payload = (signalLevel == HIGH) ? "1" : "0";
 
-  // 3. Publish the state to the dashboard topic
+  // Publish the state to the dashboard topic
   if (client.connected()) {
-    // We use 'retained = true' so the dashboard always shows the 
-    // correct state even if the UI is refreshed or reopened.
+    // Use retained = true so dashboard shows correct state after refresh
     client.publish(topic, payload, true);
   }
 }
