@@ -77,7 +77,7 @@
     "type": "dashboard"
   },
   "writeDigitalToDashboard":{
-    "inputs": { "targetPin": "digital", "signalLevel": "digital" },
+    "inputs": {  "signalLevel": "digital" },
     "outputs": {},
     "type": "dashboard"
   },
