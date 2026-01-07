@@ -1,3 +1,3 @@
-void readDigitalFromDashboard(int stateD) {
+void readDigitalFromDashboard(int &stateD) {
   // block box code here.
 }

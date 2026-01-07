@@ -1,3 +1,3 @@
-void readBattery(int vbatPin, int batteryLevel) {
+void readBattery(int vbatPin, int &batteryLevel) {
   // block box code here.
 }

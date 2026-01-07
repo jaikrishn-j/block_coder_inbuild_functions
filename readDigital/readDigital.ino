@@ -1,3 +1,3 @@
-void readDigital(int pinD, int stateD) {
+void readDigital(int pinD, int &stateD) {
   // block box code here.
 }

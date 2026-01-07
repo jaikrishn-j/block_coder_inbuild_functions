@@ -1,3 +1,3 @@
-void checkSwitchState(int switchPin, int switchStatus) {
+void checkSwitchState(int switchPin, int &switchStatus) {
   // block box code here.
 }

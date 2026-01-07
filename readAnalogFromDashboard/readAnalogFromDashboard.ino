@@ -1,3 +1,3 @@
-void readAnalogFromDashboard(int valueA) {
+void readAnalogFromDashboard(int &valueA) {
   // block box code here.
 }
