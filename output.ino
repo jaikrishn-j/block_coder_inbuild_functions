@@ -13,28 +13,24 @@
 
 #include <ArduinoJson.h>
 
-#include <PubSubClient.h>
+#include <WebSocketsClient.h>
 
-struct TopicMap {
+#include <MQTT.h>
 
-	const char* topic;
+WebSocketsClient webSocket;
 
-	int* variable;
-
-};
-
-WiFiClient espClient;
-
-PubSubClient client(espClient);
+MQTTClient mqttClient;
 
 const char* ssid = "Your_SSID";
 const char* password = "Your_PASSWORD";
 
-const char* mqtt_server = "broker.hivemq.com";
+const char* mqtt_host = "broker.hivemq.com";
 
-void callback(char* topic, byte* payload, unsigned int length);
+const uint16_t mqtt_port = 8000;
 
-void reconnect();
+void connectWebSocket();
+
+void onMqttMessage(String &topic, String &payload);
 
 String lastTopic = "";
 
@@ -57,12 +53,16 @@ void setup() {
 	}
 	Serial.println("\nWiFi connected successfully");
 
-	client.setServer(mqtt_server, 1883);
+	mqttClient.begin(mqtt_host, webSocket);
 
-	client.setCallback(callback);
+	mqttClient.onMessage(onMqttMessage);
+
+	connectWebSocket();
+
+	delay(1000); // Wait for connection
 
 	// Subscribe to dashboard topics
-	client.subscribe("readDigitalFromDashboard-1767869262340");
+	if (mqttClient.connected()) { mqttClient.subscribe("readDigitalFromDashboard-1767869262340"); }
 
 	pinMode(2, INPUT);
 	pinMode(3, OUTPUT);
@@ -73,14 +73,13 @@ void loop() {
 	int e_readDigital_1767780016267_stateD_digital_out_writeDigitalToDashboard_1767780002074_signalLevel_digital_in_1767780022760;
 	int e_readDigitalFromDashboard_1767869262340_stateD_digital_out_writeDigital_1767869255266_signalLevel_digital_in_1767869267533;
 	int e_getPin_1767867844597_pin_output_writeDigital_1767869255266_targetPin_digital_in_1767869271783 = 3;
-	if (!client.connected()) reconnect();
-
-	client.loop();
+	webSocket.loop();
+	mqttClient.loop();
 
 
 	// Function calls
-	readDigitalFromDashboard(&e_readDigitalFromDashboard_1767869262340_stateD_digital_out_writeDigital_1767869255266_signalLevel_digital_in_1767869267533, "readDigitalFromDashboard-1767869262340");
-	readDigital(e_getPin_1767780006610_pin_output_readDigital_1767780016267_pinD_digital_in_1767780019860, &e_readDigital_1767780016267_stateD_digital_out_writeDigitalToDashboard_1767780002074_signalLevel_digital_in_1767780022760);
+	readDigitalFromDashboard(e_readDigitalFromDashboard_1767869262340_stateD_digital_out_writeDigital_1767869255266_signalLevel_digital_in_1767869267533, "readDigitalFromDashboard-1767869262340");
+	readDigital(e_getPin_1767780006610_pin_output_readDigital_1767780016267_pinD_digital_in_1767780019860, e_readDigital_1767780016267_stateD_digital_out_writeDigitalToDashboard_1767780002074_signalLevel_digital_in_1767780022760);
 	writeDigital(e_getPin_1767867844597_pin_output_writeDigital_1767869255266_targetPin_digital_in_1767869271783, e_readDigitalFromDashboard_1767869262340_stateD_digital_out_writeDigital_1767869255266_signalLevel_digital_in_1767869267533);
 	writeDigitalToDashboard(e_readDigital_1767780016267_stateD_digital_out_writeDigitalToDashboard_1767780002074_signalLevel_digital_in_1767780022760, "writeDigitalToDashboard-1767780002074");
 }
@@ -128,37 +127,30 @@ void writeDigital(int targetPin, int signalLevel) {
 
 // Function definition for readDigitalFromDashboard
 void readDigitalFromDashboard(int &stateD, const char* topic) {
-  client.subscribe(topic);
+  // Nur den Wert setzen, wenn eine neue Nachricht für dieses Topic da ist
   if (lastTopic == String(topic)) {
     stateD = (lastMsg == "1" || lastMsg == "ON") ? 1 : 0;
   }
 }
 
 
-void callback(char* topic, byte* payload, unsigned int length) {
-
-	lastTopic = String(topic);
-
-	lastMsg = "";
-
-	for (int i = 0; i < length; i++) lastMsg += (char)payload[i];
-
+void connectWebSocket() {
+	Serial.println("Connecting to MQTT over WebSocket...");
+	webSocket.begin(mqtt_host, mqtt_port, "/mqtt");
+	webSocket.onEvent([](WStype_t type, uint8, uint8_t *payload, size_t length) {
+		if (type == WStype_CONNECTED) {
+			Serial.println("WebSocket connected");
+			mqttClient.connect();
+		} else if (type == WStype_TEXT) {
+			mqttClient.poll((char*)payload, length);
+		} else if (type == WStype_DISCONNECTED) {
+			Serial.println("WebSocket disconnected");
+		}
+	});
 }
 
-void reconnect() {
-
-	while (!client.connected()) {
-
-		if (client.connect("ESP_Client")) {
-
-			Serial.println("Connected");
-
-		} else {
-
-			delay(5000);
-
-		}
-
-	}
-
+void onMqttMessage(String &topic, String &payload) {
+	lastTopic = topic;
+	lastMsg = payload;
+	Serial.print("MQTT: ["); Serial.print(topic); Serial.print("] "); Serial.println(payload);
 }

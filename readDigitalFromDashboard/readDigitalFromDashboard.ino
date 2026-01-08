@@ -1,6 +1,9 @@
 void readDigitalFromDashboard(int &stateD, const char* topic) {
-  // Nur den Wert setzen, wenn eine neue Nachricht für dieses Topic da ist
   if (lastTopic == String(topic)) {
-    stateD = (lastMsg == "1" || lastMsg == "ON") ? 1 : 0;
+    // Accept common ON/1/true variants
+    String msg = lastMsg;
+    stateD = (msg == "1" || msg == "on" || msg == "ON" || msg == "true") ? 1 : 0;
+    // Clear lastTopic to avoid reprocessing (optional but safe)
+    lastTopic = "";
   }
 }

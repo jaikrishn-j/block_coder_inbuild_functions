@@ -3,18 +3,17 @@ void writeAnalogToDashboard(int intensity, const char* topic) {
   static int lastIntensity = -1;
   
   // 2. Only send if the change is significant (e.g., > 3 units)
-  // This prevents tiny electrical "noise" from spamming the broker
+  // This prevents noise or minor fluctuations from flooding the broker
   if (abs(intensity - lastIntensity) > 3) {
     
-    // Convert the integer to string for MQTT payload
+    // Convert the integer to a null-terminated string
     char payload[12];
-    snprintf(payload, sizeof(payload), "%d", intensity);
     
-    // Publish to the topic
+    // Publish to the MQTT topic (using global 'client')
     if (client.connected()) {
-      client.publish(topic, payload, true);
+      client.publish(topic, payload, true);  // ← uses 'client', not 'mqttClient'
       
-      // 3. Update the memory
+      // 3. Update the last sent value
       lastIntensity = intensity;
     }
   }
