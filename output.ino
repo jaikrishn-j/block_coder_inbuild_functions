@@ -11,26 +11,27 @@
 
 #endif
 
-#include <ArduinoJson.h>
+#include <map>
 
-#include <WebSocketsClient.h>
-
-#include <MQTT.h>
-
-WebSocketsClient webSocket;
-
-MQTTClient mqttClient;
+#include <PubSubClient.h>
 
 const char* ssid = "Your_SSID";
 const char* password = "Your_PASSWORD";
 
-const char* mqtt_host = "broker.hivemq.com";
+const char* mqtt_host = "broker.emqx.io";
 
-const uint16_t mqtt_port = 8000;
+const uint16_t mqtt_port = 1883;
 
-void connectWebSocket();
+WiFiClient espClient;
 
-void onMqttMessage(String &topic, String &payload);
+PubSubClient client(espClient);
+
+std::map<String, int> topicRegistry;
+std::map<String, int> lastPublishedValues;
+
+void callback(char* topic, byte* payload, unsigned int length);
+
+void reconnect();
 
 String lastTopic = "";
 
@@ -43,27 +44,11 @@ void readDigitalFromDashboard(int &stateD, const char* topic);
 
 void setup() {
 	Serial.begin(115200);
-	delay(100);
-
-	Serial.println("Connecting to WiFi network: Your_SSID");
 	WiFi.begin(ssid, password);
-	while (WiFi.status() != WL_CONNECTED) {
-		delay(500);
-		Serial.print(".");
-	}
-	Serial.println("\nWiFi connected successfully");
-
-	mqttClient.begin(mqtt_host, webSocket);
-
-	mqttClient.onMessage(onMqttMessage);
-
-	connectWebSocket();
-
-	delay(1000); // Wait for connection
-
-	// Subscribe to dashboard topics
-	if (mqttClient.connected()) { mqttClient.subscribe("readDigitalFromDashboard-1767869262340"); }
-
+	while (WiFi.status() != WL_CONNECTED) delay(500);
+	
+	client.setServer(mqtt_broker, mqtt_port);
+	client.setCallback(callback);
 	pinMode(2, INPUT);
 	pinMode(3, OUTPUT);
 }
@@ -73,8 +58,8 @@ void loop() {
 	int e_readDigital_1767780016267_stateD_digital_out_writeDigitalToDashboard_1767780002074_signalLevel_digital_in_1767780022760;
 	int e_readDigitalFromDashboard_1767869262340_stateD_digital_out_writeDigital_1767869255266_signalLevel_digital_in_1767869267533;
 	int e_getPin_1767867844597_pin_output_writeDigital_1767869255266_targetPin_digital_in_1767869271783 = 3;
-	webSocket.loop();
-	mqttClient.loop();
+	if (!client.connected()) reconnect();
+	client.loop();
 
 
 	// Function calls
@@ -86,12 +71,14 @@ void loop() {
 
 // Function definition for writeDigitalToDashboard
 void writeDigitalToDashboard(int signalLevel, const char* topic) {
-  static int lastSignalLevel = -1;
-  if (signalLevel != lastSignalLevel) {
-    const char* payload = (signalLevel == HIGH) ? "1" : "0";
-    if (mqttClient.connected()) {
-      mqttClient.publish(topic, payload, true); // ← mqttClient, not client
-      lastSignalLevel = signalLevel;
+  if (!client.connected()) return;
+
+  // Only publish if the value has changed
+  if (signalLevel != lastPublishedValues[topic]) {
+    char msg[2];
+    itoa(signalLevel, msg, 10);
+    if (client.publish(topic, msg)) {
+      lastPublishedValues[topic] = signalLevel;
     }
   }
 }
@@ -128,23 +115,31 @@ void readDigitalFromDashboard(int &stateD, const char* topic) {
 }
 
 
-void connectWebSocket() {
-	Serial.println("Connecting to MQTT over WebSocket...");
-	webSocket.begin(mqtt_host, mqtt_port, "/mqtt");
-	webSocket.onEvent([](WStype_t type, uint8, uint8_t *payload, size_t length) {
-		if (type == WStype_CONNECTED) {
-			Serial.println("WebSocket connected");
-			mqttClient.connect();
-		} else if (type == WStype_TEXT) {
-			mqttClient.poll((char*)payload, length);
-		} else if (type == WStype_DISCONNECTED) {
-			Serial.println("WebSocket disconnected");
-		}
-	});
+void callback(char* topic, byte* payload, unsigned int length) {
+	char message[length + 1];
+	memcpy(message, payload, length);
+	message[length] = '\0';
+	
+	int value = atoi(message);
+	topicRegistry[String(topic)] = value; // Store for the loop functions
+	
+	Serial.printf("Topic: %s | Message: %d\n", topic, value);
 }
-
-void onMqttMessage(String &topic, String &payload) {
-	lastTopic = topic;
-	lastMsg = payload;
-	Serial.print("MQTT: ["); Serial.print(topic); Serial.print("] "); Serial.println(payload);
+void reconnect() {
+	while (!client.connected()) {
+		Serial.print("Attempting MQTT connection...");
+		String clientId = "NodeMCU-" + String(random(0xffff), HEX);
+		
+		if (client.connect(clientId.c_str())) {
+			Serial.println("connected");
+			// Re-subscribe to all topics currently in our registry keys
+			for (auto const& [topic, val] : topicRegistry) {
+				client.subscribe(topic.c_str());
+			}
+		} else {
+			Serial.print("failed, rc=");
+			Serial.print(client.state());
+			delay(5000);
+		}
+	}
 }
