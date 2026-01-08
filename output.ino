@@ -86,20 +86,11 @@ void loop() {
 
 // Function definition for writeDigitalToDashboard
 void writeDigitalToDashboard(int signalLevel, const char* topic) {
-  // 1. Create a variable that "remembers" the last signal level
-  static int lastSignalLevel = -1; 
-
-  // 2. ONLY proceed if the current signal is different from the last one
+  static int lastSignalLevel = -1;
   if (signalLevel != lastSignalLevel) {
-    
-    // Prepare the payload for the MQTT broker
     const char* payload = (signalLevel == HIGH) ? "1" : "0";
-
-    // Publish the state to the dashboard topic
-    if (client.connected()) {
-      client.publish(topic, payload, true);
-      
-      // 3. Update the "last signal" so we don't send it again until it changes
+    if (mqttClient.connected()) {
+      mqttClient.publish(topic, payload, true); // ← mqttClient, not client
       lastSignalLevel = signalLevel;
     }
   }
@@ -127,9 +118,12 @@ void writeDigital(int targetPin, int signalLevel) {
 
 // Function definition for readDigitalFromDashboard
 void readDigitalFromDashboard(int &stateD, const char* topic) {
-  // Nur den Wert setzen, wenn eine neue Nachricht für dieses Topic da ist
   if (lastTopic == String(topic)) {
-    stateD = (lastMsg == "1" || lastMsg == "ON") ? 1 : 0;
+    // Accept common ON/1/true variants
+    String msg = lastMsg;
+    stateD = (msg == "1" || msg == "on" || msg == "ON" || msg == "true") ? 1 : 0;
+    // Clear lastTopic to avoid reprocessing (optional but safe)
+    lastTopic = "";
   }
 }
 
