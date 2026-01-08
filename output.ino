@@ -40,10 +40,10 @@ String lastTopic = "";
 
 String lastMsg = "";
 
-void writeDigitalToDashboard(int signalLevel,  const char* topic);
+void writeDigitalToDashboard(int signalLevel, const char* topic);
 void readDigital(int pinD, int &stateD);
-void readDigitalFromDashboard(int &stateD,  const char* topic);
 void writeDigital(int targetPin, int signalLevel);
+void readDigitalFromDashboard(int &stateD, const char* topic);
 
 void setup() {
 	Serial.begin(115200);
@@ -61,41 +61,52 @@ void setup() {
 
 	client.setCallback(callback);
 
+	// Subscribe to dashboard topics
+	client.subscribe("readDigitalFromDashboard-1767869262340");
+
 	pinMode(2, INPUT);
-	pinMode(3, INPUT);
+	pinMode(3, OUTPUT);
 }
 
 void loop() {
-	int e_getPin_1767780006610_pin_output_readDigital_1767780016267_pinD_digital_in_1767780019860 = 3;
+	int e_getPin_1767780006610_pin_output_readDigital_1767780016267_pinD_digital_in_1767780019860 = 2;
 	int e_readDigital_1767780016267_stateD_digital_out_writeDigitalToDashboard_1767780002074_signalLevel_digital_in_1767780022760;
-	int e_getPin_1767867844597_pin_output_writeDigital_1767867839045_targetPin_digital_in_1767867854718 = 3;
-	int e_readDigitalFromDashboard_1767867833298_stateD_digital_out_writeDigital_1767867839045_signalLevel_digital_in_1767867857935;
+	int e_readDigitalFromDashboard_1767869262340_stateD_digital_out_writeDigital_1767869255266_signalLevel_digital_in_1767869267533;
+	int e_getPin_1767867844597_pin_output_writeDigital_1767869255266_targetPin_digital_in_1767869271783 = 3;
 	if (!client.connected()) reconnect();
 
 	client.loop();
 
 
 	// Function calls
-	writeDigitalToDashboard(e_readDigitalFromDashboard_1767867833298_stateD_digital_out_writeDigital_1767867839045_signalLevel_digital_in_1767867857935, "readDigital-1767780016267");
-	readDigital(3, e_readDigitalFromDashboard_1767867833298_stateD_digital_out_writeDigital_1767867839045_signalLevel_digital_in_1767867857935);
-	readDigitalFromDashboard(e_readDigitalFromDashboard_1767867833298_stateD_digital_out_writeDigital_1767867839045_signalLevel_digital_in_1767867857935);
-	writeDigital(3, e_readDigitalFromDashboard_1767867833298_stateD_digital_out_writeDigital_1767867839045_signalLevel_digital_in_1767867857935);
+	readDigitalFromDashboard(&e_readDigitalFromDashboard_1767869262340_stateD_digital_out_writeDigital_1767869255266_signalLevel_digital_in_1767869267533, "readDigitalFromDashboard-1767869262340");
+	readDigital(e_getPin_1767780006610_pin_output_readDigital_1767780016267_pinD_digital_in_1767780019860, &e_readDigital_1767780016267_stateD_digital_out_writeDigitalToDashboard_1767780002074_signalLevel_digital_in_1767780022760);
+	writeDigital(e_getPin_1767867844597_pin_output_writeDigital_1767869255266_targetPin_digital_in_1767869271783, e_readDigitalFromDashboard_1767869262340_stateD_digital_out_writeDigital_1767869255266_signalLevel_digital_in_1767869267533);
+	writeDigitalToDashboard(e_readDigital_1767780016267_stateD_digital_out_writeDigitalToDashboard_1767780002074_signalLevel_digital_in_1767780022760, "writeDigitalToDashboard-1767780002074");
 }
 
 // Function definition for writeDigitalToDashboard
 void writeDigitalToDashboard(int signalLevel, const char* topic) {
-  // Prepare the payload for the MQTT broker
-  const char* payload = (signalLevel == HIGH) ? "1" : "0";
+  // 1. Create a variable that "remembers" the last signal level
+  static int lastSignalLevel = -1; 
 
-  // Publish the state to the dashboard topic
-  if (client.connected()) {
-    // Use retained = true so dashboard shows correct state after refresh
-    client.publish(topic, payload, true);
+  // 2. ONLY proceed if the current signal is different from the last one
+  if (signalLevel != lastSignalLevel) {
+    
+    // Prepare the payload for the MQTT broker
+    const char* payload = (signalLevel == HIGH) ? "1" : "0";
+
+    // Publish the state to the dashboard topic
+    if (client.connected()) {
+      client.publish(topic, payload, true);
+      
+      // 3. Update the "last signal" so we don't send it again until it changes
+      lastSignalLevel = signalLevel;
+    }
   }
 }
 
 
-// Function definition for getPin
 // Function definition for readDigital
 void readDigital(int pinD, int &stateD) {
   // Read the current digital level (HIGH or LOW) from the specified pin
@@ -107,20 +118,20 @@ void readDigital(int pinD, int &stateD) {
 }
 
 
+// Function definition for writeDigital
+void writeDigital(int targetPin, int signalLevel) {
+  // Directly set the pin state to HIGH (1) or LOW (0)
+  // On ESP8266, HIGH outputs 3.3V
+  digitalWrite(targetPin, signalLevel);
+}
+
+
 // Function definition for readDigitalFromDashboard
 void readDigitalFromDashboard(int &stateD, const char* topic) {
   client.subscribe(topic);
   if (lastTopic == String(topic)) {
     stateD = (lastMsg == "1" || lastMsg == "ON") ? 1 : 0;
   }
-}
-
-
-// Function definition for writeDigital
-void writeDigital(int targetPin, int signalLevel) {
-  // Directly set the pin state to HIGH (1) or LOW (0)
-  // On ESP8266, HIGH outputs 3.3V
-  digitalWrite(targetPin, signalLevel);
 }
 
 
